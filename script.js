@@ -1,4 +1,6 @@
 const gameContainer = document.getElementById("game");
+const startButton = document.querySelector("button.start");
+const scoreElement = document.querySelector("#score");
 
 const COLORS = [
   "red",
@@ -13,12 +15,14 @@ const COLORS = [
   "purple"
 ];
 
-tries = 0;
-try1 = undefined;
+let score = 0;
+let tries = 0;
+let try1 = undefined;
+let completedPairs = 0;
 
 // here is a helper function to shuffle an array
 // it returns the same array with values shuffled
-// it is based on an algorithm called Fisher Yates if you want ot research more
+// it is based on an algorithm called Fisher Yates
 function shuffle(array) {
   let counter = array.length;
 
@@ -39,7 +43,6 @@ function shuffle(array) {
   return array;
 }
 
-let shuffledColors = shuffle(COLORS);
 
 // this function loops over the array of colors
 // it creates a new div and gives it a class with the value of the color
@@ -60,11 +63,7 @@ function createDivsForColors(colorArray) {
   }
 }
 
-// TODO: Implement this function!
 function handleCardClick(event) {
-  // you can use event.target to see which element was clicked
-  console.log("you just clicked");
-  
   if(tries ===0){
     tries++;
     event.target.style.backgroundColor = event.target.className;
@@ -82,7 +81,12 @@ function handleCardClick(event) {
         },1000);
       }
       else{
+        completedPairs++;
         tries = 0;
+      }
+      incrementScore();
+      if(completedPairs ===5 ){
+        gameOver();
       }
     }
   }
@@ -93,7 +97,22 @@ function handleCardClick(event) {
   
 }
 
-startButton = document.querySelector("button.start");
+function incrementScore(){
+  score++;
+  scoreElement.innerText = "Tries: "+score+ " , Completed Pairs: "+completedPairs;
+}
+
+function gameOver(){
+  startButton.classList.toggle("hidden");
+  startButton.innerText = "Restart Game";
+  scoreElement.innerText = "Game Over. You took " +score + " turns."
+  score = 0;
+  completedPairs = 0;
+  gameContainer.innerHTML = "";
+}
+
 startButton.addEventListener("click", function(event){
-  createDivsForColors(shuffledColors);
+  createDivsForColors(shuffle(COLORS));
+  startButton.classList.add("hidden");
+  scoreElement.classList.remove("hidden");
 })

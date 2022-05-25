@@ -7,6 +7,14 @@
 }
 
 .start {
-font-size: 3rem;
+font-size: 2rem;
 background-color: bisque;
+}
+
+#score {
+  font-size: 2rem;
+}
+
+.hidden {
+  display: none;
 }
