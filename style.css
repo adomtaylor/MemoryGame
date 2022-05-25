@@ -5,3 +5,8 @@
   margin: 10px;
   display: inline-block;
 }
+
+.start {
+font-size: 3rem;
+background-color: bisque;
+}

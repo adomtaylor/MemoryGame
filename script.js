@@ -93,7 +93,7 @@ function handleCardClick(event) {
   
 }
 
-// when the DOM loads
-createDivsForColors(shuffledColors);
-
-/* */
+startButton = document.querySelector("button.start");
+startButton.addEventListener("click", function(event){
+  createDivsForColors(shuffledColors);
+})
