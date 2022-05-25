@@ -115,4 +115,5 @@ startButton.addEventListener("click", function(event){
   createDivsForColors(shuffle(COLORS));
   startButton.classList.add("hidden");
   scoreElement.classList.remove("hidden");
-})
+  scoreElement.innerText = "Tries: "+score+ " , Completed Pairs: "+completedPairs;
+});
