@@ -12,13 +12,15 @@ const COLORS = [
   "blue",
   "green",
   "orange",
-  "purple"
+  "purple",
 ];
 
-let score = 0;
-let tries = 0;
-let try1 = undefined;
-let completedPairs = 0;
+const gameState = {
+  score: 0,
+  tries: 0,
+  try1: undefined,
+  completedPairs: 0,
+};
 
 // here is a helper function to shuffle an array
 // it returns the same array with values shuffled
@@ -43,7 +45,6 @@ function shuffle(array) {
   return array;
 }
 
-
 // this function loops over the array of colors
 // it creates a new div and gives it a class with the value of the color
 // it also adds an event listener for a click for each card
@@ -64,56 +65,59 @@ function createDivsForColors(colorArray) {
 }
 
 function handleCardClick(event) {
-  if(tries ===0){
-    tries++;
-    event.target.style.backgroundColor = event.target.className;
-    try1 = event.target;
-  }
-  else if (tries ===1) {
-    if (try1 !== event.target){
-      tries++;
-      event.target.style.backgroundColor = event.target.className;
-      if (event.target.className !== try1.className){
-        setTimeout(function (){
-          try1.style.backgroundColor = "";
+  if (gameState.tries === 0) {
+    gameState.tries++;
+    showCard(event.target);
+    gameState.try1 = event.target;
+  } else if (gameState.tries === 1) {
+    if (gameState.try1 !== event.target) {
+      gameState.tries++;
+      showCard(event.target);
+      if (event.target.className !== gameState.try1.className) {
+        setTimeout(() => {
+          gameState.try1.style.backgroundColor = "";
           event.target.style.backgroundColor = "";
-          tries = 0;
-        },1000);
-      }
-      else{
-        completedPairs++;
-        tries = 0;
+          gameState.tries = 0;
+        }, 1000);
+      } else {
+        gameState.completedPairs++;
+        gameState.tries = 0;
       }
       incrementScore();
-      if(completedPairs ===5 ){
+      if (gameState.completedPairs === 5) {
         gameOver();
       }
     }
-  }
-  else{
+  } else {
     console.log("wait");
   }
-
-  
 }
 
-function incrementScore(){
-  score++;
-  scoreElement.innerText = "Tries: "+score+ " , Completed Pairs: "+completedPairs;
+function showCard(card) {
+  card.style.backgroundColor = card.className;
 }
 
-function gameOver(){
+function incrementScore() {
+  gameState.score++;
+  updateScoreDisplay();
+}
+
+function updateScoreDisplay() {
+  scoreElement.innerText = `Tries: ${gameState.score} , Completed Pairs: ${gameState.completedPairs}`;
+}
+
+function gameOver() {
   startButton.classList.toggle("hidden");
   startButton.innerText = "Restart Game";
-  scoreElement.innerText = "Game Over. You took " +score + " turns."
-  score = 0;
-  completedPairs = 0;
+  scoreElement.innerText = `Game Over. You took ${gameState.score} turns.`;
+  gameState.score = 0;
+  gameState.completedPairs = 0;
   gameContainer.innerHTML = "";
 }
 
-startButton.addEventListener("click", function(event){
+startButton.addEventListener("click", function (event) {
   createDivsForColors(shuffle(COLORS));
   startButton.classList.add("hidden");
   scoreElement.classList.remove("hidden");
-  scoreElement.innerText = "Tries: "+score+ " , Completed Pairs: "+completedPairs;
+  updateScoreDisplay();;
 });
