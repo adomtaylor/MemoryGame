@@ -131,7 +131,7 @@ function gameOver() {
   scoreElement.innerText = `Game Over. You took ${gameState.score} tries.`;
   if (gameState.score < gameState.bestScore) {
     putSavedScore(gameState.score);
-    scoreElement.innerText += `New Best Score of ${gameState.score} Tries!`
+    scoreElement.innerText += ` New Best Score of ${gameState.score} Tries!`
     gameState.bestScore = gameState.score;
   }
   gameState.score = 0;
