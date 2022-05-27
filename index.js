@@ -1,26 +1,37 @@
 const gameContainer = document.getElementById("game");
 const startButton = document.querySelector("button.start");
 const scoreElement = document.querySelector("#score");
+const COLORS = [];
 
-const COLORS = [
-  "red",
-  "blue",
-  "green",
-  "orange",
-  "purple",
-  "red",
-  "blue",
-  "green",
-  "orange",
-  "purple",
-];
+bestScore = 99999;
+savedScore = loadSavedScore();
+if (savedScore) {
+  bestScore = savedScore;
+}
 
 const gameState = {
   score: 0,
   tries: 0,
   try1: undefined,
   completedPairs: 0,
+  colorCount: 5,
 };
+
+function addColors(count) {
+  for (let i = 0; i < count; i++) {
+    let colorValue = generateRandomColor();
+    let colorID = "color" + i;
+    COLORS.push({ colorID, colorValue });
+    COLORS.push({ colorID, colorValue });
+  }
+  shuffle(COLORS);
+}
+
+function generateRandomColor() {
+  return `rgb(${Math.floor(Math.random() * 256)},${Math.floor(
+    Math.random() * 256
+  )},${Math.floor(Math.random() * 256)})`;
+}
 
 // here is a helper function to shuffle an array
 // it returns the same array with values shuffled
@@ -54,7 +65,9 @@ function createDivsForColors(colorArray) {
     const newDiv = document.createElement("div");
 
     // give it a class attribute for the value we are looping over
-    newDiv.classList.add(color);
+    newDiv.classList.add(color.colorID);
+    newDiv.dataset.colorValue = color.colorValue;
+    newDiv.innerText = "Click to Turnover";
 
     // call a function handleCardClick when a div is clicked on
     newDiv.addEventListener("click", handleCardClick);
@@ -75,8 +88,8 @@ function handleCardClick(event) {
       showCard(event.target);
       if (event.target.className !== gameState.try1.className) {
         setTimeout(() => {
-          gameState.try1.style.backgroundColor = "";
-          event.target.style.backgroundColor = "";
+          hideCard(gameState.try1);
+          hideCard(event.target);
           gameState.tries = 0;
         }, 1000);
       } else {
@@ -84,7 +97,7 @@ function handleCardClick(event) {
         gameState.tries = 0;
       }
       incrementScore();
-      if (gameState.completedPairs === 5) {
+      if (gameState.completedPairs === gameState.colorCount) {
         gameOver();
       }
     }
@@ -94,7 +107,13 @@ function handleCardClick(event) {
 }
 
 function showCard(card) {
-  card.style.backgroundColor = card.className;
+  card.style.backgroundColor = card.dataset.colorValue;
+  card.innerText = card.classList;
+}
+
+function hideCard(card) {
+  card.style.backgroundColor = "";
+  card.innerText = "Click to Turnover";
 }
 
 function incrementScore() {
@@ -110,14 +129,26 @@ function gameOver() {
   startButton.classList.toggle("hidden");
   startButton.innerText = "Restart Game";
   scoreElement.innerText = `Game Over. You took ${gameState.score} turns.`;
+  if (gameState.score < bestScore) {
+    putSavedScore(gameState.score);
+  }
   gameState.score = 0;
   gameState.completedPairs = 0;
   gameContainer.innerHTML = "";
 }
 
+function loadSavedScore() {
+  return localStorage.getItem("bestScore");
+}
+
+function putSavedScore(score) {
+  localStorage.setItem("bestScore", score);
+}
+
 startButton.addEventListener("click", function (event) {
-  createDivsForColors(shuffle(COLORS));
+  addColors(gameState.colorCount);
+  createDivsForColors(COLORS);
   startButton.classList.add("hidden");
   scoreElement.classList.remove("hidden");
-  updateScoreDisplay();;
+  updateScoreDisplay();
 });
