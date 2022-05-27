@@ -4,6 +4,7 @@
   height: 200px;
   margin: 10px;
   display: inline-block;
+  text-align: center;
 }
 
 .start {
@@ -12,7 +13,7 @@ background-color: bisque;
 }
 
 #score {
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .hidden {

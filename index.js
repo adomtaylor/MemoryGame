@@ -3,19 +3,19 @@ const startButton = document.querySelector("button.start");
 const scoreElement = document.querySelector("#score");
 const COLORS = [];
 
-bestScore = 99999;
-savedScore = loadSavedScore();
-if (savedScore) {
-  bestScore = savedScore;
-}
-
 const gameState = {
   score: 0,
   tries: 0,
   try1: undefined,
   completedPairs: 0,
   colorCount: 5,
+  bestScore: 99999,
 };
+
+savedScore = loadSavedScore();
+if (savedScore) {
+  gameState.bestScore = savedScore;
+}
 
 function addColors(count) {
   for (let i = 0; i < count; i++) {
@@ -122,15 +122,17 @@ function incrementScore() {
 }
 
 function updateScoreDisplay() {
-  scoreElement.innerText = `Tries: ${gameState.score} , Completed Pairs: ${gameState.completedPairs}`;
+  scoreElement.innerText = `Tries: ${gameState.score} , Completed Pairs: ${gameState.completedPairs}, Best Score: ${gameState.bestScore} Tries`;
 }
 
 function gameOver() {
   startButton.classList.toggle("hidden");
   startButton.innerText = "Restart Game";
-  scoreElement.innerText = `Game Over. You took ${gameState.score} turns.`;
-  if (gameState.score < bestScore) {
+  scoreElement.innerText = `Game Over. You took ${gameState.score} tries.`;
+  if (gameState.score < gameState.bestScore) {
     putSavedScore(gameState.score);
+    scoreElement.innerText += `New Best Score of ${gameState.score} Tries!`
+    gameState.bestScore = gameState.score;
   }
   gameState.score = 0;
   gameState.completedPairs = 0;
@@ -149,6 +151,7 @@ startButton.addEventListener("click", function (event) {
   addColors(gameState.colorCount);
   createDivsForColors(COLORS);
   startButton.classList.add("hidden");
+  updateScoreDisplay();
   scoreElement.classList.remove("hidden");
   updateScoreDisplay();
 });
