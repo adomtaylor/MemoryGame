@@ -136,7 +136,7 @@ function gameOver() {
   }
   gameState.score = 0;
   gameState.completedPairs = 0;
-  gameContainer.innerHTML = "";
+  gameContainer.replaceChildren();
 }
 
 function loadSavedScore() {
